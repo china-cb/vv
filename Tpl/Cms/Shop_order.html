@@ -36,7 +36,7 @@
 								</select>
 							</label>-->
 							<label style="margin-bottom: 0px;">
-								<input name="name" type="search" class="form-control input-sm" placeholder="会员ID、会员昵称、课程ID" value="{$name}">
+								<input name="search" type="search" class="form-control input-sm" placeholder="会员ID、会员昵称、课程名称" value="{$name}">
 							</label>
 							<a href="{:U('Cms/Shop/order/')}" class="btn btn-success" data-loader="Joel-loader" data-loadername="商城订单" data-search="Joel-search">
 								<i class="fa fa-search"></i>搜索
@@ -189,7 +189,7 @@
 										</label>                                    
 	                                </div>
 								</td>
-								<td class=" sorting_1">{$vo.oid}</td>
+								<td class=" sorting_1">{$vo.id}</td>
 								<td class=" " style="max-width:5%;">{$vo.tg_qd}</td>
 								<td class=" " style="max-width:5%;">{$vo.name}</td>
 								<td class=" " style="max-width:5%;">{$vo.username}</td>
@@ -202,7 +202,7 @@
 								<td class=" " style="max-width:5%;">{$vo.pv}</td>
 								<td class=" " style="max-width:5%;">{$vo.uv}</td>
 								<td class=" " style="max-width:5%;"><notempty name='vo.paytime'>{$vo.paytime}<else/>未支付</notempty></td>
-								<td class=" " style="max-width:5%;">{$vo.ctime|date="Y/m/d H:i:s",###}</td>
+								<td class=" " style="max-width:5%;">{$vo.create_time}</td>
 								<td class=" " style="max-width:200px;word-wrap:break-word">{$vo.h5_url}</td>
 								<td class="center " style="max-width:5%;"><img src="{$vo.h5_qrimg}" height="50px" /></td>
 								<td class="center " style="max-width:5%;">
@@ -671,6 +671,7 @@
 	
 	//导出订单
 	$('#exportOrder').on('click',function(){
+		var search = '{$name}';
 		var checks=$(".Joel-check:checked");
 		var chk='';
 		$(checks).each(function(){
@@ -678,9 +679,9 @@
 		});
 		var url;
 		if('{$status}'==''){
-			url="{:U('Cms/Shop/orderExport')}/id/"+chk;
+			url="{:U('Cms/Shop/orderExport')}/id/"+chk+"/search/"+search;
 		}else{
-			url="{:U('Cms/Shop/orderExport')}/status/{$status}/id/"+chk;
+			url="{:U('Cms/Shop/orderExport')}/status/{$status}/id/"+chk+"/search/"+search;
 		}
 		
 		window.open(url);

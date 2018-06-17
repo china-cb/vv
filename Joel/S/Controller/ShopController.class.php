@@ -49,33 +49,38 @@ class ShopController extends BaseController {
             $data['goodsid'] = $info['goodsid'];
             $data['uid'] = $_SESSION['S']['uid'];
             $data['xcx_url'] = '';
-			$data['tg_time'] = strtotime($info['tg_time']);
+			$data['tg_time'] = empty($info['tg_time'])?date("Y-m-d H:i:s"):$info['tg_time'];
             $data['tg_qd'] = empty($info['tgqd'])?"默认渠道":$info['tgqd'];
+            $savedate['tg_time'] = $data['tg_time'];
+            $savedate['tg_qd'] = $data['tg_qd'];
             $goodsinfo = M("shop_goods")->where(['id'=>$goodsid])->find();
-//			$goodsurl = $_SERVER['HTTP_HOST'];
-//          $goodsurl = $goodsinfo['goods_url'];
             $goodsurl = $_SERVER['HTTP_HOST'];
-//var_dump($goodsinfol) ;die;
+
             $usergoodsurl = $goodsurl."/Wp/Wp/index/goodsid/".$info['goodsid']."/uid/".md5($_SESSION['S']['userid']."dabai");
 
             $data['h5_url'] = $usergoodsurl;
-
-            $data['ctime'] = time();
+            $data['create_time'] = time();
             $res = M("user_goods")->where(["uid"=>$data['uid'],"goodsid"=>$data['goodsid']])->find();
-		
+		    
             if($res){
-                $reg['msg'] = "ok";
+                M("user_goods")->where(["id"=>$res['id']])->save($savedate);
+                //var_dump($savedate);
+                //echo M()->getLastSql();
+                $reg['msg'] = "isok";
+        
+
                 $reg['url'] = $data['h5_url'];
                 $reg['name'] = $goodsinfo['name'];
                 $reg['cate'] = $this->getcate($goodsinfo['cid']);
                 $reg['price'] = $goodsinfo['price'];
                 $reg['fc'] = $goodsinfo['vipfx1rate'];
-                $reg['tg_time'] = $data['tg_time'];
+                $reg['tg_time'] = $savedate['tg_time'];
                 if(empty($res['tg_qd']) || $res['tg_qd']==""){
                     $reg['fxqd'] ="默认渠道";
                 }else{
-                    $reg['fxqd'] = $res['tg_qd'];
+                    $reg['fxqd'] = $savedate['tg_qd'];
                 }
+
                 $reg['qrcode'] = $res['h5_qrimg'];
             }else{
                 //再将携带个人信息的商品地址生成二维码图片
@@ -84,6 +89,9 @@ class ShopController extends BaseController {
                 $re = M("user_goods")->data($data)->add();
                 if($re){
                     $reg['msg'] = "ok";
+
+
+
                     $reg['url'] = $data['h5_url'];
                     $reg['name'] = $goodsinfo['name'];
                     $reg['cate'] = $this->getcate($goodsinfo['cid']);
@@ -109,6 +117,7 @@ class ShopController extends BaseController {
 
     //生成二维码
     public function getqrcode($content){
+
         $config = array(
             'maxSize'    =>    3145728,
             'rootPath'   =>    './upload/',
@@ -313,18 +322,19 @@ class ShopController extends BaseController {
         $map['b.status']=array("eq",1);
 
         $psize=self::$S['set']['pagesize']?self::$S['set']['pagesize']:20;
-        $cache=$m->where($map)->alias("a")->field("a.oid,a.pv,a.uv,a.tg_qd,a.tg_time,a.ctime,h5_url,h5_qrimg,b.*")->join("left join joel_shop_goods b on a.goodsid=b.id and a.uid=".self::$S['uid'])->where($map)->page($p,$psize)->select();
+        $cache=$m->where($map)->alias("a")->field("a.tg_qd,a.tg_time,a.create_time,h5_url,h5_qrimg,a.pv,b.*,count(c.id) as uv")->join("LEFT JOIN joel_shop_goods b on a.goodsid=b.id and a.uid=".self::$S['uid'])->join("LEFT JOIN joel_uvlog c on a.uid=c.uid and a.goodsid=c.goodsid")->where($map)->group("a.id")->page($p,$psize)->select();
         //echo $r = M()->getLastSql();
-
-
+        //var_dump($cache);
+       
         foreach($cache as $k=>$v){
             $listpic=$this->getPic($v['pic']);
             $cache[$k]['imgurl']=$listpic['imgurl'];
             $cache[$k]['cate_name'] = $this->getcate($v['cid']);
         }
-        $count=$m->where($map)->alias("a")->field("a.oid,a.pv,a.uv,a.tg_qd,a.tg_time,a.ctime,a.h5_url,h5_qrimg,b.*")->join("left join joel_shop_goods b on a.goodsid=b.id and a.uid=".self::$S['uid'])->where($map)->count();
-        $this->getPage($count, $psize, 'Joel-loader', '我的课程','Joel-search');		
+        $count=$m->where($map)->alias("a")->field("a.tg_qd,a.tg_time,a.create_time,h5_url,h5_qrimg,a.pv,b.*,count(c.id) as uv")->join("LEFT JOIN joel_shop_goods b on a.goodsid=b.id and a.uid=".self::$S['uid'])->join("LEFT JOIN joel_uvlog c on a.uid=c.uid and a.goodsid=c.goodsid")->where($map)->group("a.id")->count();
+        $this->getPage($count, $psize, 'Joel-loader', '我的课程','Joel-search');
         $this->assign('cache',$cache);
+
         $this->display();
     }
 

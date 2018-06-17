@@ -215,14 +215,17 @@
 			</div>
 
 				<div class="modal-footer">
-					<button type="button" class="btn btn-primary" data-dismiss="modal">完成</button>
+					<button type="button" class="btn btn-primary bttype" data-dismiss="modal">完成</button>
 				</div>
 			</div>
 		</div>
 
 </div>
+<input type="hidden" name="cue" value="" id="cue">
 
 <script type="text/javascript">
+
+
 	setBread($('#tmpbread').html());
 
 </script>
@@ -273,12 +276,27 @@
                     $("#qr_img").attr("src",data1.qrcode);
                     $("#qr_aimg").attr("href",data1.qrcode);
                     $('#myModal').modal('hide');
-					$('#myModal2').modal('show');	
+					$('#myModal2').modal('show');
+					
+					$("#cue").val("已加入分销");
 
-                }else{
-                    alert("加入失败");
+
+                }else if(data1.msg=="isok"){
+                    $("#goodsname1").text(data1.name);
+                    $("#goodscate1").text(data1.cate);
+                    $("#goodsprice1").text(data1.price);
+                    $("#goodsfc1").text(data1.fc);
+                    $("#goodsqd").text(data1.fxqd);
+                    $("#goodsurl").text(data1.url);
+                    $("#qr_img").attr("src",data1.qrcode);
+                    $("#qr_aimg").attr("href",data1.qrcode);
                     $('#myModal').modal('hide');
-
+					$('#myModal2').modal('show');
+					
+					$("#cue").val("已更新分销");
+                }else{
+                	 alert("加入失败");
+                    $('#myModal').modal('hide');
                 }
 
                 //请求成功函数内容
@@ -288,6 +306,13 @@
             }
         });
 	});
+</script>
+
+<script>
+	$(".bttype").click(function(){
+		var msg = $("#cue").val();
+		alert(msg);
+	})
 </script>
 <!--/面包屑导航封装-->
 <!--全选特效封装/全部删除-->
@@ -303,6 +328,7 @@
 			$(checks).removeAttr("checked");
 		}		
 	});
+
 	$(trs).on('click',function(){
 		var c=$(this).find("input[type=checkbox]");
 		if($(c).is(":checked")){

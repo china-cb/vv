@@ -23,7 +23,13 @@
 					</a>
 					<div class="pull-right">
 						<form id="Joel-search">
-							<label><select name="stype" class="form-control input-sm"><option value='1' <eq name='stype' value='1'>selected</eq>>按分销商姓名【模糊】</option><option value='2' <eq name='stype' value='2'>selected</eq>>按分销商ID</option><option value='3' <eq name='stype' value='3'>selected</eq>>按分销商ID搜索下级</option></select></label>
+							<label>
+								<select name="stype" class="form-control input-sm">
+									<option value='1' <eq name='stype' value='1'>selected</eq>>按分销商姓名【模糊】</option>
+									<option value='2' <eq name='stype' value='2'>selected</eq>>按分销商ID</option>
+									<option value='3' <eq name='stype' value='3'>selected</eq>>按分销商ID搜索下级</option>
+								</select>
+							</label>
 							<label><input name="search" type="search" class="form-control input-sm" placeholder="请输入搜索条件"></label>
 							<a href="{:U('Cms/Fxs/user/')}" class="btn btn-success" data-loader="Joel-loader" data-loadername="分销商管理" data-search="Joel-search">
 								<i class="fa fa-search"></i>搜索
@@ -74,7 +80,7 @@
 								<td class=" ">{$vo.ctime|date='Y-m-d',###}</td>
 								<td class=" "><button class="btn btn-xs btn-blue showqr" data-title="{$vo.nickname}" data-qr="{$vo.qrticket}">点击查看</button></td>
 								<td class=" "><eq name="vo.status" value="1"><button class="btn btn-xs btn-success">正常</button><else/><button class="btn btn-xs btn-danger">停用</button></eq></td>
-								<td class=" "><a href="{:U('Cms/Shop/order',array('id'=>$vo['id']))}" class="btn btn-success btn-xs">查看课程信息</a></td>
+								<td class=" "><a href="{:U('Cms/Shop/order',array('id'=>$vo['id']))}" class="btn btn-success btn-xs" data-loader="Joel-loader" data-loadername="分销课程管理-全部课程">查看课程信息</a></td>
 								<td class="center "><a href="{:U('Cms/Fxs/userSet/',array('id'=>$vo['id']))}" class="btn btn-success btn-xs" data-loader="Joel-loader" data-loadername="设置分销商"><i class="fa fa-edit"></i> 编辑</a></td>
 							</tr>
 							<volist name="vo['_child']" id="vo2">

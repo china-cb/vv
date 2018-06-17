@@ -12,7 +12,16 @@
         }
     ],
     "require": {
-        "php": ">=5.3.0"
+        "php": ">=5.6.0",
+        "monolog/monolog":"1.2.*",
+        "phpoffice/phpexcel": "1.8.x-dev"
+
+    },
+    "repositories": {  
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }  
     },
     "minimum-stability": "dev"
 }

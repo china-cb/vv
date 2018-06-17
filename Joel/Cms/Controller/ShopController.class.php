@@ -2034,33 +2034,63 @@ class ShopController extends BaseController {
 		);
 		$this->assign('breadhtml',$this->getBread($bread));		
 		$status=I('status');
-		if($status || $status=='0'){
-			$map['status']=$status;
-		}
-		$this->assign('status',$status);
 		
-		//是否开启提取方式
-//		$iszt=M('express_set')->getField('iszt');
-//		$this->assign('iszt',$iszt);
-		
-		//绑定搜索条件与分页
-		$m=M('user_goods');
-		$p=$_GET['p']?$_GET['p']:1;
-		$psize=self::$CMS['set']['pagesize']?self::$CMS['set']['pagesize']:20;
-        $map['b.status']=array("eq",1);
-        $cache=$m->where($map)->alias("a")->field("a.oid,a.pv,a.uv,a.tg_qd,a.tg_time,a.ctime,h5_url,h5_qrimg,b.*,c.*")->join("left join joel_shop_goods b on a.goodsid=b.id")->join('LEFT JOIN joel_fxs_user c ON a.uid=c.id')->where($map)->page($p,$psize)->order('oid asc')->select();
 
-        $count=$m->where($map)->alias("a")->field("a.oid,a.pv,a.uv,a.tg_qd,a.tg_time,a.ctime,a.h5_url,h5_qrimg,b.*,c.*")->join("left join joel_shop_goods b on a.goodsid=b.id")->join('LEFT JOIN joel_fxs_user c ON a.uid=c.id')->where($map)->count();
-        $this->getPage($count, $psize, 'Joel-loader', '我的课程','Joel-search');
+        $this->assign('status',$status);
+
+        if(!empty(I("id"))){
+        	$map['a.uid'] = intval(I("id"));
+        }else{
+        		$map1['a.uid'] = array("like","%".I("search")."%");
+        	$map1['d.username'] = array("like","%".I("search")."%");
+        	$map1['b.name'] = array("like","%".I("search")."%");
+        	$map1['_logic'] = "OR";
+			$map['_complex'] = $map1;
+			$map['b.status'] = array("eq",1);
+        }
+        //绑定搜索条件与分页
+        //if(!empty(I("search"))){
+        
+        
+        $m = M('user_goods');
+        $p = $_GET['p']?$_GET['p']:1;
+        
+
+        $psize=20;
+        $cache=$m->alias("a")->field("a.tg_qd,a.tg_time,a.create_time,h5_url,h5_qrimg,a.pv,b.*,count(c.id) as uv,d.username")->join("LEFT JOIN joel_shop_goods b on a.goodsid=b.id")->join("LEFT JOIN joel_uvlog c on a.uid=c.uid and a.goodsid=c.goodsid")->join("LEFT JOIN joel_Fxs_user d on a.uid=d.id ")->where($map)->group("a.id")->page($p,$psize)->select();
+        //echo $r = M()->getLastSql();
+        //var_dump($cache);
+       
         foreach($cache as $k=>$v){
             $listpic=$this->getPic($v['pic']);
             $cache[$k]['imgurl']=$listpic['imgurl'];
-//          $cache[$k]['cate_name'] = $this->getcate($v['cid']);
+            $cache[$k]['cate_name'] = $this->getcate($v['cid']);
         }
-		$this->assign('cache',$cache);		
-		$this->display();
+        $count=$m->alias("a")->field("a.tg_qd,a.tg_time,a.create_time,h5_url,h5_qrimg,a.pv,b.*,count(c.id) as uv,d.username")->join("LEFT JOIN joel_shop_goods b on a.goodsid=b.id")->join("LEFT JOIN joel_uvlog c on a.uid=c.uid and a.goodsid=c.goodsid")->join("LEFT JOIN joel_Fxs_user d on a.uid=d.id ")->where($map)->group("a.id")->count();
+        $this->getPage($count, $psize, 'Joel-loader', '我的课程','Joel-search');
+        $this->assign('cache',$cache);
+        $this->display();
 	}
 	
+	//获取单张图片
+	public function getPic($id){
+		$m=M('Upload_img');
+		$map['id']=$id;
+		$list=$m->where($map)->find();
+		if($list){
+			$list['imgurl']="/upload/".$list['savepath'].$list['savename'];
+		}
+		return $list?$list:"";
+	}
+
+    //获取分类名称
+    public function getcate($id){
+        $m=M('shop_cate');
+        $map['id']=$id;
+        $list=$m->field("name")->where($map)->find();
+
+        return $list?$list['name']:"";
+    }
 		//发货快递
 	public function orderFhkd(){
 		$map['id']=I('id');
@@ -3149,6 +3179,63 @@ class ShopController extends BaseController {
 
 	//导出订单
 	public function orderExport() {
+		
+			$m=M('user_goods');
+
+			$map1['a.uid'] =array("like","%".I("search")."%");
+        	$map1['d.username'] =array("like","%".I("search")."%");
+        	$map1['b.name'] =array("like","%".I("search")."%");
+        	$map1['_logic'] = "OR";
+       
+			$map['_complex'] = $map1;
+			$map['b.status']=array("eq",1);
+				
+			$data = $m->alias("a")->field("
+						a.tg_qd,
+						b.name,
+						b.cid,
+						d.username,
+						b.price,
+						b.vipfx1rate,
+						a.tg_time,
+						a.pv,
+						count(c.id) as uv,
+						a.create_time,
+						a.h5_url
+						")
+					->join("LEFT JOIN joel_shop_goods b on a.goodsid=b.id")
+					->join("LEFT JOIN joel_uvlog c on a.uid=c.uid and a.goodsid=c.goodsid")
+					->join("LEFT JOIN joel_Fxs_user d on a.uid=d.id ")
+					->where($map)
+					->group("a.id")
+					->page($p,$psize)
+					->select();
+	        //echo $r = M()->getLastSql();
+	        //var_dump($cache);
+	       
+	        foreach($data as $k=>$v){
+	          
+	            $data[$k]['cate_name'] = $this->getcate($v['cid']);
+	            unset($data[$k]['cid']);
+	        }
+			$title=array(
+						'渠道',
+						'课程名称',
+						'分享会员',
+						'价格',
+						'佣金',
+						'推广时间',
+						'pv',
+						'uv',
+						'创建时间',
+						'分销页面路径',
+						'模块'
+						);
+			$this->exportexcel($data,$title,$tt.'课程'.date('Y-m-d H:i:s',time()));
+		}
+
+	//导出订单
+	public function orderExport_old() {
 			$id=I('id');
 			$status=I('status');
 			if ($id) {

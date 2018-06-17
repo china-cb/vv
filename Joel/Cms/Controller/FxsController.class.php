@@ -57,23 +57,86 @@ class FxsController extends BaseController {
 			$mappid=$search;
 			$this->assign('stype',3);
 		}
+
 		if($map){
 			if($stype==3){
-				$field=array("id","pid","lv","no","nickname","username","mobile","total_xxyj","total_xxlink","total_xxsub","total_xxbuy","sonnum","soncate","ctime","sorts","qrticket","status","concat(path,'-',id) as bpath");
-				$cache=joelTree($m, $mappid, $field);
+				$field = array("id","pid","lv","no","nickname","username","mobile","total_xxyj","total_xxlink","total_xxsub","total_xxbuy","sonnum","soncate","ctime","sorts","qrticket","status","concat(path,'-',id) as bpath");
+				$cache = joelTree($m, $mappid, $field);
 			}else{
-				$cache=$m->where($map)->select();
+				$cache = $m->where($map)->select();
 			}
 			
 		}else{
 			$field=array("id","pid","lv","no","nickname","username","mobile","total_xxyj","total_xxlink","total_xxsub","total_xxbuy","sonnum","soncate","ctime","sorts","qrticket","status","concat(path,'-',id) as bpath");
-				$cache=joelTree($m, 0, $field);
+				$cache = joelTree($m, 0, $field);
 		}
 		//JoelTree快速无限分类
 		
 		$this->assign('cache',$cache);		
 		$this->display();
 	}
+
+	public function userOrder()
+	{
+		$uid = I("id");
+		//设置面包导航，主加载器请配置
+        $bread=array(
+			'0'=>array(
+				'name'=>'分销商首页',
+				'url'=>U('Cms/Fxs/index')
+			),
+			'1'=>array(
+				'name'=>'分销商管理',
+				'url'=>U('Cms/Fxs/user')
+			)
+		);
+		$this->assign('breadhtml',$this->getBread($bread));
+        $status=I('status');
+        if($status || $status=='0'){
+            $map['status']=$status;
+        }
+        $this->assign('status',$status);
+        //绑定搜索条件与分页
+        $m=M('user_goods');
+        $p=$_GET['p']?$_GET['p']:1;
+        $map['b.status']=array("eq",1);
+
+        $psize=20;
+        $cache=$m->where($map)->alias("a")->field("a.tg_qd,a.tg_time,a.create_time,h5_url,h5_qrimg,a.pv,b.*,count(c.id) as uv")->join("LEFT JOIN joel_shop_goods b on a.goodsid=b.id and a.uid=".$uid)->join("LEFT JOIN joel_uvlog c on a.uid=c.uid and a.goodsid=c.goodsid")->where($map)->group("a.id")->page($p,$psize)->select();
+        //echo $r = M()->getLastSql();
+        //var_dump($cache);
+       
+        foreach($cache as $k=>$v){
+            $listpic=$this->getPic($v['pic']);
+            $cache[$k]['imgurl']=$listpic['imgurl'];
+            $cache[$k]['cate_name'] = $this->getcate($v['cid']);
+        }
+        $count=$m->where($map)->alias("a")->field("a.tg_qd,a.tg_time,a.create_time,h5_url,h5_qrimg,a.pv,b.*,count(c.id) as uv")->join("LEFT JOIN joel_shop_goods b on a.goodsid=b.id and a.uid=".$uid)->join("LEFT JOIN joel_uvlog c on a.uid=c.uid and a.goodsid=c.goodsid")->where($map)->group("a.id")->count();
+        $this->getPage($count, $psize, 'Joel-loader', '我的课程','Joel-search');
+        $this->assign('cache',$cache);
+
+        $this->display();
+	}
+	
+//获取单张图片
+	public function getPic($id){
+		$m=M('Upload_img');
+		$map['id']=$id;
+		$list=$m->where($map)->find();
+		if($list){
+			$list['imgurl']="/upload/".$list['savepath'].$list['savename'];
+		}
+		return $list?$list:"";
+	}
+
+    //获取分类名称
+    public function getcate($id){
+        $m=M('shop_cate');
+        $map['id']=$id;
+        $list=$m->field("name")->where($map)->find();
+
+        return $list?$list['name']:"";
+    }
 	
 	//CMS后台商城分类设置
 	public function userSet(){
