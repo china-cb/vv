@@ -56,7 +56,7 @@ class FxsController extends BaseController {
 	
 
 
-	
+	//test
 	//S后台广告设置
 	public function adsSet(){
 		$id=I('id');
