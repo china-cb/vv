@@ -2057,16 +2057,16 @@ class ShopController extends BaseController {
         
 
         $psize=20;
-        $cache=$m->alias("a")->field("a.tg_qd,a.tg_time,a.create_time,h5_url,h5_qrimg,a.pv,b.*,count(c.id) as uv,d.username")->join("LEFT JOIN joel_shop_goods b on a.goodsid=b.id")->join("LEFT JOIN joel_uvlog c on a.uid=c.uid and a.goodsid=c.goodsid")->join("LEFT JOIN joel_Fxs_user d on a.uid=d.id ")->where($map)->group("a.id")->page($p,$psize)->select();
+        $cache=$m->alias("a")->field("a.oid,a.uv,a.tg_qd,a.tg_time,a.ctime,h5_url,h5_qrimg,a.pv,b.*,count(c.id) as uv,d.username")->join("LEFT JOIN joel_shop_goods b on a.goodsid=b.id")->join("LEFT JOIN joel_uvlog c on a.uid=c.uid and a.goodsid=c.goodsid")->join("LEFT JOIN joel_Fxs_user d on a.uid=d.id ")->where($map)->group("a.oid")->page($p,$psize)->select();
         //echo $r = M()->getLastSql();
-        //var_dump($cache);
+//      var_dump($cache);
        
         foreach($cache as $k=>$v){
             $listpic=$this->getPic($v['pic']);
             $cache[$k]['imgurl']=$listpic['imgurl'];
             $cache[$k]['cate_name'] = $this->getcate($v['cid']);
         }
-        $count=$m->alias("a")->field("a.tg_qd,a.tg_time,a.create_time,h5_url,h5_qrimg,a.pv,b.*,count(c.id) as uv,d.username")->join("LEFT JOIN joel_shop_goods b on a.goodsid=b.id")->join("LEFT JOIN joel_uvlog c on a.uid=c.uid and a.goodsid=c.goodsid")->join("LEFT JOIN joel_Fxs_user d on a.uid=d.id ")->where($map)->group("a.id")->count();
+        $count=$m->alias("a")->field("a.oid,a.uv,a.tg_qd,a.tg_time,a.ctime,h5_url,h5_qrimg,a.pv,b.*,count(c.id) as uv,d.username")->join("LEFT JOIN joel_shop_goods b on a.goodsid=b.id")->join("LEFT JOIN joel_uvlog c on a.uid=c.uid and a.goodsid=c.goodsid")->join("LEFT JOIN joel_Fxs_user d on a.uid=d.id ")->where($map)->group("a.oid")->count();
         $this->getPage($count, $psize, 'Joel-loader', '我的课程','Joel-search');
         $this->assign('cache',$cache);
         $this->display();

@@ -15,8 +15,8 @@ class WpController extends Controller
 
     public function index(){    	
         $map['id'] = I('goodsid');
-        $uid = I("uid");
-       // var_dump(cookie("uvip"));
+        $uid = I("uid");		
+//     var_dump(cookie("uvip"));
         //查询数据库中是否存在加密后的用户id
         $sql = "SELECT  md5(CONCAT(uid, 'dabai')) AS newuid,uid FROM joel_user_goods WHERE goodsid = ".I('goodsid')." AND md5(CONCAT(uid, 'dabai')) = '".$uid."'";
         $info = M()->query($sql);
@@ -24,10 +24,8 @@ class WpController extends Controller
             //更新PV数
             $mmp['uid'] = intval($info[0]['uid']);
             $mmp['goodsid'] = intval(I('goodsid'));
-
             M("user_goods")->where($mmp)->setInc("pv",1);
-            //echo $lsql = M()->getLastsql();
-           
+            //echo $lsql = M()->getLastsql();           
         }
         	
         

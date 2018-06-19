@@ -81,7 +81,7 @@
 								<td class=" " style="max-width:5%;">{$vo.pv}</td>
 								<td class=" " style="max-width:5%;">{$vo.uv}</td>
 								<td class=" " style="max-width:5%;"><notempty name='vo.paytime'>{$vo.paytime}<else/>未支付</notempty></td>
-								<td class=" " style="max-width:5%;">{$vo.create_time}</td>
+								<td class=" " style="max-width:5%;">{$vo.ctime|date="Y/m/d H:i:s",###}</td>
 								<td class=" " style="max-width:200px;word-wrap:break-word">{$vo.h5_url}</td>
 								<td class="center " style="max-width:5%;"><img src="{$vo.h5_qrimg}" height="50px" /></td>
 								<td class="center " style="max-width:5%;">
