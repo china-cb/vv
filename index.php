@@ -33,6 +33,7 @@ if(version_compare(PHP_VERSION,'5.3.0','<'))  die('require PHP > 5.3.3 !');
 define('APP_DEBUG',True);
 // 定义应用和框架目录
 define('APP_PATH','./Joel/');
+define('APP_ROOT',dirname(__FILE__));
 define('THINK_PATH',realpath('./Joel/_Core').'/');
 // 定义运行时目录
 define('RUNTIME_PATH','./Runtime/');

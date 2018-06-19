@@ -56,7 +56,7 @@ class ShopController extends BaseController {
             $goodsinfo = M("shop_goods")->where(['id'=>$goodsid])->find();
             $goodsurl = $_SERVER['HTTP_HOST'];
 
-            $usergoodsurl = $goodsurl."/Wp/Wp/index/goodsid/".$info['goodsid']."/uid/".md5($_SESSION['S']['userid']."dabai");
+            $usergoodsurl = $goodsurl."/Wp/Wp/index/goodsid/".$info['goodsid']."/uid/".md5($_SESSION['S']['uid']."dabai");
 
             $data['h5_url'] = $usergoodsurl;
             $data['ctime'] = time();

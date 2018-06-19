@@ -64,7 +64,7 @@
     display: inline-block;
     margin-left: 35%;
     margin-top: 4%;
-    background: chocolate;padding-left: 0%;"><a href="{$goodsinfo.goods_url}">立即报名</a></li>
+    background: chocolate;padding-left: 0%;"><a href="{:U('WeixinApi/WeixinPay/pay',array('uid'=>$uid,'goodsid'=>$goodsid))}">立即报名</a></li>
 
 		</ul>
 	</div>

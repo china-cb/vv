@@ -15,7 +15,7 @@ return array(
 	//插件预加载地址
 	//'AUTOLOAD_NAMESPACE' => array('Addons' => './Addons/'),
 	// 允许访问的模块列表
-	'MODULE_ALLOW_LIST'    =>    array('Home','Admin','Cms','Wap','Www','S','Api','Wp'),//允许访问的模块
+	'MODULE_ALLOW_LIST'    =>    array('Home','Admin','Cms','Wap','Www','S','Api','Wp','WeixinApi'),//允许访问的模块
 	'DEFAULT_MODULE'       =>    'S',  // 默认模块
 	
 	/* Cookie设置 */
@@ -54,9 +54,9 @@ return array(
 	/* 数据库设置 */
     'DB_TYPE'               =>  'mysql',     // 数据库类型
     'DB_HOST'               =>  'localhost', // 服务器地址
-    'DB_NAME'               =>  'v1',          // 数据库名
+    'DB_NAME'               =>  'vv',          // 数据库名
     'DB_USER'               =>  'root',      // 用户名
-    'DB_PWD'                =>  '',          // 密码wqt@4321
+    'DB_PWD'                =>  'root',          // 密码wqt@4321
     'DB_PORT'               =>  '3306',        // 端口
     'DB_PREFIX'             =>  'joel_',    // 数据库表前缀
     'DB_FIELDTYPE_CHECK'    =>  false,       // 是否进行字段类型检查

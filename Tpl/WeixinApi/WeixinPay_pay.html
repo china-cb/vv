@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>商品详情页面</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1,minimum-scale=1,maximum-scale=1" />
+<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<link href="__PUBLIC__/wp/css/ratchet.min.css" rel="stylesheet" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/wp/css/page.css" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/wp/css/product.css" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/wp/css/pro2.css" />
+
+<script src="__PUBLIC__/wp/js/flex.js"></script>
+<script src="__PUBLIC__/wp/js/jquery.min.js"></script>
+<script src="__PUBLIC__/wp/js/ratchet.min.js"></script>
+<script type="text/javascript">  
+//调用微信JS api 支付  
+function jsApiCall()  
+{  
+	var data={$data};
+    WeixinJSBridge.invoke(  
+        'getBrandWCPayRequest',  
+        data,  
+        function(res){  
+            WeixinJSBridge.log(res.err_msg);  
+            //alert(res.err_code+res.err_desc+res.err_msg);  
+            if(res.err_msg == "get_brand_wcpay_request:ok"){    
+                    alert("支付成功!");  
+                    window.location.href="xxxx";  
+                }else if(res.err_msg == "get_brand_wcpay_request:cancel"){    
+                    alert("用户取消支付!");    
+                }else{    
+                    alert("支付失败!");    
+                }    
+        }  
+    );  
+}  
+  
+ function callpay()  
+{  
+    if (typeof WeixinJSBridge == "undefined"){  
+        if( document.addEventListener ){  
+            document.addEventListener('WeixinJSBridgeReady', jsApiCall, false);  
+        }else if (document.attachEvent){  
+            document.attachEvent('WeixinJSBridgeReady', jsApiCall);   
+            document.attachEvent('onWeixinJSBridgeReady', jsApiCall);  
+        }  
+    }else{  
+        jsApiCall();  
+    }  
+}  
+</script>  
+</head>
+<body>
+<header class="bar bar-nav"> <a class="icon icon-left-nav pull-left"></a> <a class="icon icon-more-vertical pull-right"></a>
+  <h1 class="title">商品详情</h1>
+</header>
+<div id="content">
+  <div class="scroller">
+    <div id="p-summary" class="page">
+      <div class="container">
+        <section id="s-showcase">
+          <div class="scroller">
+            <div class="itbox main"> <a class="item"> <img src="{$goodsinfo.imgurl}" alt="" /> </a> </div>
+          </div>
+        </section>
+        <section id="s-from" class="mui-flex"> </section>
+        <section id="s-title">
+          <div class="main">
+            <h1>{$goodsinfo.name}</h1>
+          </div>
+          <div class="sub">
+            <div class="slogon"></div>
+          </div>
+        </section>
+        <section id="s-price"> <span class="mui-price big"> <i class="mui-price-rmb">&yen;</i> <span class="mui-price-integer">{$goodsinfo.price}</span> <span class="mui-price-decimal"></span> </span> </section>
+        <!--
+        <section id="s-adds"> </section>
+        <section id="s-hkDeliver"></section>
+        <section class="itemExtraInfo"> </section>
+        <section id="s-advantage" data-spm=""> </section>
+        <div id="s-action-container">
+          <section id="s-action"> </section>
+        </div>
+        <section id="s-rate" data-spm=""> </section>
+        <ul class="table-view">
+          <li class="table-view-cell" style="padding: 11px 6px 11px 15px;font-size: 18px;font-style:bold;color:#333;">规格选择 <span style="float: right;margin-right:10px;" class="icon icon icon-more clickwn"></span></li>
+        </ul>
+        <ul class="table-view" style="margin-top: 10px;">
+          <li class="table-view-cell media"> <a class=""> <img class="media-object pull-left" src="http://placehold.it/42x42" />
+            <div class="media-body"> 店铺名字
+              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore. Lorem ipsum dolor sit amet.</p>
+            </div>
+            </a> </li>
+        </ul>
+        <ul class="table-view" style="margin-top:10px;">
+          <li class="table-view-cell"> <a class="navigate-right" style="font-size: 18px;font-style:bold;color:#666;"> <span class="badge">共1485条</span> 用户评价 </a> </li>
+        </ul>-->
+        <div class="ipo">
+          <ul class="table-view">
+              <li class="table-view-cell media"> 
+                <a class="">
+                  <div class="media-body"> 详情 </div>
+                </a> 
+              </li>
+          </ul>
+          <!--
+          <div class="leftc"> 
+              <img src="{$vo.imgurl}" />
+          </div>
+          <div class="rightc">
+            <p style="margin-bottom: 0;"> <img src="__PUBLIC__/wp/images/51.png" /> </p>
+            <p> <img src="__PUBLIC__/wp/images/58.png" /> </p>
+          </div>-->
+          <div class="list">
+            <div class="list_title">
+              <h3>{$goodsinfo.cate_name}</h3>
+
+            </div>
+            <div class="img" style="width:100%;position:relative;">
+              <img src="{$goodsinfo.imgurl}" width="100%">
+            </div>
+            <div class="display" style="text-align: center;">
+              <h3>{$goodsinfo.name}</h3>
+              <div class="display_content">
+                {$goodsinfo.content|htmlspecialchars_decode=###}
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <section id="s-actionBar-container">
+          <div id="s-actionbar" class="action-bar mui-flex align-center">
+            <button class="buy cell" onclick="callpay()">立即购买</button>
+            <div class="activity-box cell"></div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+
+</html>l
