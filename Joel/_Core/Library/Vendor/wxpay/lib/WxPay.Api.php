@@ -1,14 +1,7 @@
 <?php
-/*
-namespace Api\wxpay;
-use Api\wxpay\WxPayException;
-use Api\wxpay\WxPayConfig;
-use Api\wxpay\WxPayData;
-*/
-
-require_once("WxPay.Exception.php");
-require_once("WxPay.Config.php");
-require_once("WxPay.Data.php");
+require_once "WxPay.Exception.php";
+require_once "WxPay.Config.php";
+require_once "WxPay.Data.php";
 
 /**
  * 

@@ -45,7 +45,7 @@ class WeixinPayController extends Controller
 	    
 	     
 	    $jsApiParameters = wxpay($openId,$goods,$order_sn,$total_fee,$attach);
-	    var_dump($jsApiParameters);  
+	    //var_dump($jsApiParameters);
 	    $this->assign('data',$jsApiParameters);  
 	    $this->display();  
 	}  
